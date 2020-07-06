@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:task="http://www.springframework.org/schema/task"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+	 http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.3.xsd
+     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd">
+
+    <bean id="rejectHandler"
+          class="java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy"/>
+
+    <bean id="globalThreadPoolExecutor"
+          class="org.springframework.scheduling.concurrent.ThreadPoolExecutorFactoryBean">
+        <property name="corePoolSize" value="${thread.pool.core.pool.size}"/>
+        <property name="maxPoolSize" value="${thread.pool.max.pool.size}"/>
+        <property name="queueCapacity" value="${thread.pool.queue.capacity}"/>
+        <property name="keepAliveSeconds" value="${thread.pool.keep.alive.seconds}"/>
+        <property name="rejectedExecutionHandler" ref="rejectHandler"/>
+    </bean>
+
+    <bean id="globalScheduledExecutor"
+          class="org.springframework.scheduling.concurrent.ScheduledExecutorFactoryBean">
+        <property name="poolSize" value="${thread.scheduler.pool.size}"/>
+        <property name="rejectedExecutionHandler" ref="rejectHandler"/>
+    </bean>
+
+    <bean id="asyncHttpClientConfigBuilder" class="org.asynchttpclient.DefaultAsyncHttpClientConfig.Builder">
+        <property name="connectTimeout" value="${http.ning.connect.timeout}"/>
+        <property name="maxConnections" value="${http.ning.max.connections}"/>
+        <property name="maxConnectionsPerHost" value="${http.ning.max.connections.per.host}"/>
+        <property name="requestTimeout" value="${http.ning.request.timeout}"/>
+        <property name="readTimeout" value="${http.ning.read.timeout}"/>
+<!--         <property name="acceptAnyCertificate" value="true"/> -->
+        <property name="followRedirect" value="true"/>
+        <property name="userAgent" value="Mozilla/5.0 (Linux; Android 5.0; SM-G900P Build/LRX21T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.23 Mobile Safari/537.36"/>
+    </bean>
+
+    <bean id="asyncHttpClient" class="org.asynchttpclient.DefaultAsyncHttpClient">
+        <constructor-arg index="0">
+            <bean factory-bean="asyncHttpClientConfigBuilder"
+                  factory-method="build"/>
+        </constructor-arg>
+    </bean>
+
+
+</beans>

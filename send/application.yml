@@ -1,0 +1,70 @@
+serviceName: send
+
+# Swagger
+swagger:
+  resourcePackage: com.sync.task.resources
+  title: sync API
+  description: ec sync task API
+  version: v1.0.0
+  contact: shaka
+  contactEmail: zhangyiming
+  swaggerViewConfiguration:
+    pageTitle: sync task API
+
+debug: true
+
+
+thread.pool.core.pool.size: 100
+thread.pool.max.pool.size: 400
+thread.pool.queue.capacity: 600
+thread.pool.keep.alive.seconds: 3000
+
+#\u5b9a\u65f6\u4efb\u52a1\u7ebf\u7a0b\u6c60
+thread.scheduler.pool.size: 50
+
+#http\u5ba2\u6237\u7aef\u914d\u7f6e
+http.ning.connect.timeout: 30000
+http.ning.max.connections: 10000
+http.ning.max.connections.per.host: 1000
+http.ning.request.timeout: 30000
+http.ning.read.timeout: 30000
+
+server:
+  applicationContextPath: /
+  requestLog:
+    appenders:
+    - type: console
+      timeZone: UTC  
+  applicationConnectors:
+    - type: http
+      port: 9499
+#    - type: https
+#      port: 9443
+#      keyStorePath: example.keystore
+#      keyStorePassword: example
+#      validateCerts: false
+  adminConnectors:
+    - type: http
+      port: 9498
+#    - type: https
+#      port: 9444
+#      keyStorePath: example.keystore
+#      keyStorePassword: example
+#      validateCerts: false
+
+logging:
+  level: INFO
+  loggers:
+    "com.ning": ERROR
+    "io.dropwizard": ERROR
+  appenders:
+    - type: console
+    - type: file
+      currentLogFilename: /usr/local/send/logs/log.log
+      threshold: ALL
+      maxFileSize: 100MB
+      archive: true
+      archivedLogFilenamePattern: /usr/local/send/logs/log-%d{yyyy-MM-dd}_%i.log
+      archivedFileCount: 30
+      timeZone: UTC
+      logFormat: "%-5level [%d{yyyy-MM-dd HH:mm:ss Z}] [%t] %logger{128} - %msg %n"
